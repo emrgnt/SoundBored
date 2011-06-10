@@ -62,30 +62,40 @@ local tileY = 0
 local tileW = (display.contentWidth + colMax) / colMax
 local tileH = tileW
 
-for i=1,#data do
+function incrementCol()
+	colCount = colCount + 1
+	tileX = tileX + tileW + gutterSize
+end
+
+function incrementRow()
+	colCount = 1
+	tileX = 0
+	tileY = tileY + tileH + gutterSize
+end
+
+local createButtonTile = tile.drawImageButtonTile(tileX, tileY, tileW, tileH, scrollView, "new.png", .5, scaleAmplifier)
+incrementCol()
+
+for i=2,#data do
 	-- has image
-	if data[i]["image"] then
-		data[i]["tile"] = tile.drawImageTile(tileX, tileY, tileW, tileH, scrollView, data[i]["sound"], data[i]["image"], scalePercent, scaleAmplifier)
+	if data[i-1]["image"] then
+		data[i-1]["tile"] = tile.drawImageTile(tileX, tileY, tileW, tileH, scrollView, data[i-1]["sound"], data[i-1]["image"], scalePercent, scaleAmplifier)
 		
 	-- has colour
-	elseif data[i]["color"] then
-		data[i]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, scrollView, data[i]["sound"], data[i]["color"])
+	elseif data[i-1]["color"] then
+		data[i-1]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, scrollView, data[i-1]["sound"], data[i-1]["color"])
 
 	-- has neither
 	else
-		data[i]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, scrollView, data[i]["sound"], {200, 200, 200})
+		data[i-1]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, scrollView, data[i-1]["sound"], {200, 200, 200})
 	end
 	
 	-- next in row
 	if colCount < colMax then
-		colCount = colCount + 1
-		tileX = tileX + tileW + gutterSize
-
+		incrementCol()
 	-- new row
 	else
-		colCount = 1
-		tileX = 0
-		tileY = tileY + tileH + gutterSize
+		incrementRow()
 	end
 end
 

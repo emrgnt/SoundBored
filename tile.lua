@@ -1,10 +1,20 @@
 module (..., package.seeall)
 -- local util = require("util")
 
-function drawImageTile(tX, tY, tW, tH, tG, sound, image, scalePercent, scaleAmplifier)
-	print("draw image tile: ")
-	util.print_r(image)
+function drawColorTile(tX, tY, tW, tH, tG, sound, color)
+	local tile = display.newRect(tX, tY, tW, tH)
+	tile:setFillColor(color[1], color[2], color[3])
 
+	local tileGroup = display.newGroup()
+	tileGroup:insert(tile)
+	tG:insert(tileGroup)
+
+	assignSound(tile, sound)
+	
+	return tileGroup
+end
+
+function drawImageTile(tX, tY, tW, tH, tG, sound, image, scalePercent, scaleAmplifier)
 	local tile = display.newImage(image, tX, tY)
 	tile:scale(scalePercent, scalePercent)
 	tile.width = tW * scaleAmplifier
@@ -18,24 +28,27 @@ function drawImageTile(tX, tY, tW, tH, tG, sound, image, scalePercent, scaleAmpl
 	
 	assignSound(tile, sound)
 
-	return tile
+	return tileGroup
 end
 
-function drawColorTile(tX, tY, tW, tH, tG, sound, color)
-	-- print("draw color tile: ")
-	-- util.print_r(color)
-	--> tile
-
-	local tile = display.newRect(tX, tY, tW, tH)
-	tile:setFillColor(color[1], color[2], color[3])
+function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmplifier)
+	local tile = display.newImage(image, tX, tY)
+	tile:scale(scalePercent, scalePercent)
+	tile.width = tW * scaleAmplifier
+	tile.height = tH * scaleAmplifier
+	tile.xOrigin = tX + (tW / 2)
+	tile.yOrigin = tY + (tH / 2)
 
 	local tileGroup = display.newGroup()
 	tileGroup:insert(tile)
-	tG:insert(tileGroup)
-
-	assignSound(tile, sound)
+	tG:insert(tile)
 	
-	return tile
+	tile:addEventListener ("touch", function(event)
+	local alert = native.showAlert( "Corona", "Dream. Build. Ship.", 
+	                                        { "OK", "Learn More" } )
+	end)
+
+	return tileGroup
 end
 
 -- TODO: After making OO, click to stop (toggling an is-playing instance var after playSound, removing the event handling and adding one to stop, and vice versa)
