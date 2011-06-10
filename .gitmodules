@@ -1,0 +1,3 @@
+[submodule "lib/director.lua"]
+	path = lib/director.lua
+	url = git@github.com:emrgnt/director.lua.git
