@@ -42,10 +42,14 @@ function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmpli
 	local tileGroup = display.newGroup()
 	tileGroup:insert(tile)
 	tG:insert(tile)
-	
+
 	tile:addEventListener ("touch", function(event)
-	local alert = native.showAlert( "Corona", "Dream. Build. Ship.", 
-	                                        { "OK", "Learn More" } )
+		local alert = native.showAlert(
+			"Corona", 
+			"Dream. Build. Ship.", 
+			{ "OK", "Learn More" } 
+		)
+		director:changeScene("create")
 	end)
 
 	return tileGroup
