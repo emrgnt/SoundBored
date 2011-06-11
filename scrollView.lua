@@ -36,59 +36,93 @@ function new(params)
 		
 	scrollView.top = params.top or 0
 	scrollView.bottom = params.bottom or 0
+	
+	moved = 0
 
 	function scrollView:touch(event) 
 	        local phase = event.phase      
 	        print(phase)
-	        			        
-	        if( phase == "began" ) then
+	
+        	if( phase == "began" ) then
+				moved = 0
 				print(scrollView.y)
-	                self.startPos = event.y
-	                self.prevPos = event.y                                       
-	                self.delta, self.velocity = 0, 0
-		            if self.tween then transition.cancel(self.tween) end
 
-	                Runtime:removeEventListener("enterFrame", scrollView ) 
+                self.startPos = event.y
+                self.prevPos = event.y
+                self.delta, self.velocity = 0, 0
 
-					self.prevTime = 0
-					self.prevY = 0
+	            if self.tween then transition.cancel(self.tween) end
+                Runtime:removeEventListener("enterFrame", scrollView ) 
+			
+				self.prevTime = 0
+				self.prevY = 0
+			
+				transition.to(self.scrollBar,  { time=200, alpha=1 } )									
 
-					transition.to(self.scrollBar,  { time=200, alpha=1 } )									
+				-- Start tracking velocity
+                Runtime:addEventListener("enterFrame", trackVelocity )  	 			
+                Runtime:removeEventListener("enterFrame", scrollView)
 
-					-- Start tracking velocity
-					Runtime:addEventListener("enterFrame", trackVelocity)
-	                
-	                -- Subsequent touch events will target button even if they are outside the stageBounds of button
-	                display.getCurrentStage():setFocus( self )
-	                self.isFocus = true
-	 
-	        elseif( self.isFocus ) then
-	 
-	                if( phase == "moved" ) then     
-					        local bottomLimit = screenH - self.height - self.bottom
-	            
-	                        self.delta = event.y - self.prevPos
-	                        self.prevPos = event.y
-	                        if ( self.y > self.top or self.y < bottomLimit ) then 
-                                self.y  = self.y + self.delta/2
-	                        else
-                                self.y = self.y + self.delta   
-	                        end
-	                        
-	                        scrollView:moveScrollBar()
+				-- Subsequent touch events will target button even if they are outside the stageBounds of button
+				display.getCurrentStage():setFocus(self, event.id)
+				self.isFocus = true
+					 
+	     	elseif( self.isFocus ) then
+					 
+                if( phase == "moved" ) then     
+			        local bottomLimit = screenH - self.height - self.bottom
+			          
+	                self.delta = event.y - self.prevPos
+					moved = moved + self.delta
+                    self.prevPos = event.y
+                    if ( self.y > self.top or self.y < bottomLimit ) then 
+                           self.y  = self.y + self.delta/2
+                    else
+                           self.y = self.y + self.delta   
+                    end
+                   
+                    -- scrollView:moveScrollBar()
 
-	                elseif( phase == "ended" or phase == "cancelled" ) then 
-	                        local dragDistance = event.y - self.startPos
-							self.lastTime = event.time
-	                        
-	                        Runtime:addEventListener("enterFrame", scrollView )  	 			
-	                        Runtime:removeEventListener("enterFrame", trackVelocity)
-	        	                	        
-	                        -- Allow touch events to be sent normally to the objects they "hit"
-	                        display.getCurrentStage():setFocus( nil )
-	                        self.isFocus = false
-	                end
-	        end
+                elseif( phase == "ended" or phase == "cancelled" ) then 
+
+					local dragDistance = event.y - self.startPos
+					self.lastTime = event.time
+					
+	                Runtime:addEventListener("enterFrame", scrollView )  	 			
+	                Runtime:removeEventListener("enterFrame", trackVelocity)
+
+					if (moved < 10 and moved > -10) then
+						print("touch (" .. moved .. ")")
+						self.isFocus = false
+						display.getCurrentStage():setFocus(nil)
+						
+						print "touch x & y:"
+						print (event.x)
+						print (event.y)
+
+						i = 0
+						repeat  
+							i = i + 1
+
+							if 	event.x >= scrollView[i].contentBounds.xMin and 
+								event.y >= scrollView[i].contentBounds.yMin and 
+								event.x <= scrollView[i].contentBounds.xMax and 
+								event.y <= scrollView[i].contentBounds.yMax then
+								
+								scrollView[i]._functionListeners["touch"][1]({name=touch,phase='ended'})
+							end
+							
+						until scrollView[i] == nil
+						
+					else
+						print("end drag (" .. moved .. ")")
+					end
+	                	        
+	                -- Allow touch events to be sent normally to the objects they "hit"
+	                -- display.getCurrentStage():setFocus( nil )
+	                -- self.isFocus = false
+				end
+			end
 	        
 	        return true
 	end
