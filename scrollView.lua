@@ -42,6 +42,9 @@ function new(params)
 	function scrollView:touch(event) 
 	        local phase = event.phase      
 	        print(phase)
+
+			--> Stop sound if dragging?
+			-- media.stopSound()
 	
         	if( phase == "began" ) then
 				moved = 0
@@ -88,7 +91,7 @@ function new(params)
 					local dragDistance = event.y - self.startPos
 					self.lastTime = event.time
 					
-	                Runtime:addEventListener("enterFrame", scrollView )  	 			
+	                Runtime:addEventListener("enterFrame", scrollView)
 	                Runtime:removeEventListener("enterFrame", trackVelocity)
 
 					if (moved < 10 and moved > -10) then
@@ -118,12 +121,10 @@ function new(params)
 									print(" - " .. scrollView[c].contentBounds.yMax)
 								
 									print "> print_r:"
-									util.print_r(scrollView[c])
+									-- util.print_r(scrollView[c])
 									-- scrollView[c].foreach(t, print)
 									
 									if scrollView[c]._functionListeners then
-										print "haz listener"
-								        -- Runtime:removeEventListener("enterFrame", trackVelocity)
 										scrollView[c]._functionListeners["touch"][1]({name=touch,phase='ended'})
 									end
 
@@ -150,34 +151,43 @@ function new(params)
 		self.lastTime = self.lastTime + timePassed       
 
         --turn off scrolling if velocity is near zero
-        if math.abs(self.velocity) < .01 then
-                self.velocity = 0
-	            Runtime:removeEventListener("enterFrame", scrollView )          
-				transition.to(self.scrollBar,  { time=400, alpha=0 } )									
-        end       
+		if math.abs(self.velocity) < .01 then
+			self.velocity = 0
+			Runtime:removeEventListener("enterFrame", scrollView )          
+			transition.to(self.scrollBar,  { time=400, alpha=0 } )									
+		end       
 
         self.velocity = self.velocity*friction
         
         self.y = math.floor(self.y + self.velocity*timePassed)
         
+		print("self.y")
+		print(self.y)
+
+		print("self.top")
+		print(self.top)
+
         local upperLimit = self.top 
-	    local bottomLimit = screenH - self.height - self.bottom
+		local bottomLimit = self.bottom
+	    -- local bottomLimit = screenH - self.height - self.bottom
         
         if ( self.y > upperLimit ) then
-                self.velocity = 0
-                Runtime:removeEventListener("enterFrame", scrollView )          
-                self.tween = transition.to(self, { time=400, y=upperLimit, transition=easing.outQuad})
-				transition.to(self.scrollBar,  { time=400, alpha=0 } )									
+            self.velocity = 0
+            Runtime:removeEventListener("enterFrame", scrollView )          
+            self.tween = transition.to(self, { time=400, y=upperLimit, transition=easing.outQuad})
+			transition.to(self.scrollBar,  { time=400, alpha=0 } )									
         elseif ( self.y < bottomLimit and bottomLimit < 0 ) then 
-                self.velocity = 0
-                Runtime:removeEventListener("enterFrame", scrollView )          
-                self.tween = transition.to(self, { time=400, y=bottomLimit, transition=easing.outQuad})
-				transition.to(self.scrollBar,  { time=400, alpha=0 } )									
+			-- print "ABOVE AND BELOW"
+            self.velocity = 0
+            Runtime:removeEventListener("enterFrame", scrollView )          
+            self.tween = transition.to(self, { time=400, y=bottomLimit, transition=easing.outQuad})
+			transition.to(self.scrollBar,  { time=400, alpha=0 } )									
         elseif ( self.y < bottomLimit ) then 
-                self.velocity = 0
-                Runtime:removeEventListener("enterFrame", scrollView )          
-                self.tween = transition.to(self, { time=400, y=upperLimit, transition=easing.outQuad})        
-				transition.to(self.scrollBar,  { time=400, alpha=0 } )									
+			-- print "ABOVE"
+			self.velocity = 0
+			Runtime:removeEventListener("enterFrame", scrollView )          
+			self.tween = transition.to(self, { time=400, y=upperLimit, transition=easing.outQuad})        
+			transition.to(self.scrollBar,  { time=400, alpha=0 } )									
         end 
 
         scrollView:moveScrollBar()
@@ -235,7 +245,7 @@ function new(params)
 		scrollBar.y = -self.y*self.yRatio + scrollBar.height*0.5 + self.top
 
 		self.scrollBar = scrollBar
-
+		
 		transition.to(scrollBar,  { time=400, alpha=0 } )			
 	end
 
