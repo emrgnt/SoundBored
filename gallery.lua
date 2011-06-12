@@ -137,9 +137,12 @@ end
 
 -- Important! Add a background to the scroll view for a proper hit area
 local scrollBackground = display.newRect(0, 0, display.contentWidth, scrollView.height+64)
-scrollBackground:setFillColor(255, 255, 255)
-scrollView:insert(1, scrollBackground)
 
+--scrollBackground:setFillColor(255, 255, 255)
+scrollBackground:setFillColor(0, 0, 0)
+scrollBackground:setFillColor(15,15,15)
+
+scrollView:insert(1, scrollBackground)
 scrollView:addScrollBar()
 
 
