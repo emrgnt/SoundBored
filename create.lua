@@ -12,8 +12,8 @@ function new()
 -- localGroup:insert(background)
 
 local bluebutton = display.newImage ("bluebutton.png")
-bluebutton.x = 160
-bluebutton.y = 100
+bluebutton.x = display.contentWidth / 2
+bluebutton.y = display.contentHeight / 2
 localGroup:insert(bluebutton)
 
 local function pressblue (event)
