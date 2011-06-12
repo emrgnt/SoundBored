@@ -31,7 +31,8 @@ function drawImageTile(tX, tY, tW, tH, tG, sound, image, scalePercent, scaleAmpl
 	return tileGroup
 end
 
-function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmplifier)
+function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmplifier, directorInstance)
+	
 	local tile = display.newImage(image, tX, tY)
 	tile:scale(scalePercent, scalePercent)
 	tile.width = tW * scaleAmplifier
@@ -41,17 +42,16 @@ function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmpli
 
 	local tileGroup = display.newGroup()
 	tileGroup:insert(tile)
-	tG:insert(tile)
-
-	tile:addEventListener ("touch", function(event)
-		local alert = native.showAlert(
-			"Corona", 
-			"Dream. Build. Ship.", 
-			{ "OK", "Learn More" } 
-		)
-		director:changeScene("create")
-	end)
-
+	
+	local function pressCreateButtonTile (event)
+		print(">>> press create")
+		if event.phase == "ended" then
+			print(">>> press create - ended")
+			director:changeScene ("create")
+		end
+	end
+	tile:addEventListener ("touch", pressRed)
+	
 	return tileGroup
 end
 
@@ -60,8 +60,14 @@ function assignSound(t, s)
 	if s == nil then
 		s = "noaudio.mp3"
 	end
-	t:addEventListener ("touch", function(event)
-		media.stopSound()
-		media.playSound(s)
-	end)
+	local function pressTile (event)
+		print(">>> press tile")
+		-- util.print_r(t)
+		if event.phase == "ended" then
+			print(">>> press tile - ended")
+			media.stopSound()
+			media.playSound(s)
+		end
+	end
+	t:addEventListener("touch", pressTile)
 end

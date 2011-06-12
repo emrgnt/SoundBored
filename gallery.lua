@@ -8,11 +8,10 @@ function new()
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-
--- Important! Add a background to the scroll view for a proper hit area
-local background = display.newRect(0, 0, display.contentWidth, display.contentHeight)
-background:setFillColor(210, 210, 210)
-
+-- -- Important! Add a background to the scroll view for a proper hit area
+-- local background = display.newRect(0, 0, display.contentWidth, display.contentHeight)
+-- background:setFillColor(210, 210, 210)
+-- 
 --import the scrolling classes
 local scrollView = require("scrollView") -- TODO: fix scrollbar looking weird, taking up full height
 local util = require("util")
@@ -47,6 +46,8 @@ local data = {
 	{image="image1.jpg", label="One"}
 }
 
+-------------------------------------------
+
 -- device settings
 local colMax = 3
 local colCount = 1
@@ -60,6 +61,8 @@ local tileY = 0
 local tileW = (display.contentWidth + colMax) / colMax
 local tileH = tileW
 
+-------------------------------------------
+
 function incrementCol()
 	colCount = colCount + 1
 	tileX = tileX + tileW + gutterSize
@@ -71,8 +74,28 @@ function incrementRow()
 	tileY = tileY + tileH + gutterSize
 end
 
-local createButtonTile = tile.drawImageButtonTile(tileX, tileY, tileW, tileH, scrollView, "new.png", .5, scaleAmplifier)
+-------------------------------------------
+
+-- local createButtonTile = tile.drawImageButtonTile(tileX, tileY, tileW, tileH, scrollView, "new.png", .5, scaleAmplifier, director)
+local createButtonTile = display.newImage("new.png", tileX, tileY)
+createButtonTile:scale(scalePercent, scalePercent)
+createButtonTile.width = tileW * scaleAmplifier
+createButtonTile.height = tileH * scaleAmplifier
+createButtonTile.xOrigin = tileX + (tileW / 2)
+createButtonTile.yOrigin = tileY + (tileH / 2)
+scrollView:insert(createButtonTile)
+
+local function pressCreateButtonTile (event)
+	print(">>> press create")
+	if event.phase == "ended" then
+		print(">>> press create - ended")
+		director:changeScene ("create")
+	end
+end
+createButtonTile:addEventListener ("touch", pressCreateButtonTile)
 incrementCol()
+
+-------------------------------------------
 
 for i=2,#data do
 	-- has image
@@ -119,6 +142,6 @@ scrollView:addScrollBar()
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
-	return localGroup
+	return scrollView
 end
 --> This is how we end every file except for director and main, as mentioned in my first comment

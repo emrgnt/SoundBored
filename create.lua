@@ -19,7 +19,7 @@ localGroup:insert(bluebutton)
 local function pressblue (event)
 	if event.phase == "ended" then
 		print("pressblue")
-		director:changeScene ("grid")
+		director:changeScene ("gallery")
 	end
 end
 bluebutton:addEventListener ("touch", pressblue)

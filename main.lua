@@ -1,6 +1,8 @@
 display.setStatusBar (display.HiddenStatusBar)
 --> Hides the status bar
 
+local util = require("util")
+
 local director = require ("director")
 --> Imports director
 

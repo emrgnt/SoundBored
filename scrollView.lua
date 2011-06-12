@@ -83,7 +83,7 @@ function new(params)
                    
                     -- scrollView:moveScrollBar()
 
-                elseif( phase == "ended" or phase == "cancelled" ) then 
+                elseif( phase == "ended") then 
 
 					local dragDistance = event.y - self.startPos
 					self.lastTime = event.time
@@ -96,23 +96,40 @@ function new(params)
 						self.isFocus = false
 						display.getCurrentStage():setFocus(nil)
 						
-						print "touch x & y:"
-						print (event.x)
-						print (event.y)
-
-						i = 0
+						local c = 0
 						repeat  
-							i = i + 1
-
-							if 	event.x >= scrollView[i].contentBounds.xMin and 
-								event.y >= scrollView[i].contentBounds.yMin and 
-								event.x <= scrollView[i].contentBounds.xMax and 
-								event.y <= scrollView[i].contentBounds.yMax then
+							c = c + 1
+							if c > 1 then -- think element 1 might be container...?
+								if 	scrollView[c] and 
+									event.x >= scrollView[c].contentBounds.xMin and 
+									event.y >= scrollView[c].contentBounds.yMin and 
+									event.x <= scrollView[c].contentBounds.xMax and 
+									event.y <= scrollView[c].contentBounds.yMax then
 								
-								scrollView[i]._functionListeners["touch"][1]({name=touch,phase='ended'})
-							end
-							
-						until scrollView[i] == nil
+									print("=============\nscrollView: " .. c)
+									print ""
+									print "> touch x & y:"
+									print(" - " .. event.x)
+									print(" - " .. event.y)
+									print "> tile x & y:"
+									print(" - " .. scrollView[c].contentBounds.xMin)
+									print(" - " .. scrollView[c].contentBounds.yMin)
+									print(" - " .. scrollView[c].contentBounds.xMax)
+									print(" - " .. scrollView[c].contentBounds.yMax)
+								
+									print "> print_r:"
+									util.print_r(scrollView[c])
+									-- scrollView[c].foreach(t, print)
+									
+									if scrollView[c]._functionListeners then
+										print "haz listener"
+								        -- Runtime:removeEventListener("enterFrame", trackVelocity)
+										scrollView[c]._functionListeners["touch"][1]({name=touch,phase='ended'})
+									end
+
+								end
+							end							
+						until scrollView[c] == nil
 						
 					else
 						print("end drag (" .. moved .. ")")
