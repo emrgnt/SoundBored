@@ -227,26 +227,26 @@ function new(params)
 	scrollView:addEventListener( "touch", scrollView )
 	
 	function scrollView:addScrollBar(r,g,b,a)
-		if self.scrollBar then self.scrollBar:removeSelf() end
-
-		local scrollColorR = r or 0
-		local scrollColorG = g or 0
-		local scrollColorB = b or 0
-		local scrollColorA = a or 120
-						
-		local viewPortH = screenH - self.top - self.bottom 
-		local scrollH = viewPortH*self.height/(self.height*2 - viewPortH)		
-		local scrollBar = display.newRoundedRect(viewableScreenW-8,0,5,scrollH,2)
-		scrollBar:setFillColor(scrollColorR, scrollColorG, scrollColorB, scrollColorA)
-
-		local yRatio = scrollH/self.height
-		self.yRatio = yRatio		
-
-		scrollBar.y = -self.y*self.yRatio + scrollBar.height*0.5 + self.top
-
-		self.scrollBar = scrollBar
-		
-		transition.to(scrollBar,  { time=400, alpha=0 } )			
+		-- if self.scrollBar then self.scrollBar:removeSelf() end
+		-- 
+		-- local scrollColorR = r or 0
+		-- local scrollColorG = g or 0
+		-- local scrollColorB = b or 0
+		-- local scrollColorA = a or 120
+		-- 				
+		-- local viewPortH = screenH - self.top - self.bottom 
+		-- local scrollH = viewPortH*self.height/(self.height*2 - viewPortH)		
+		-- local scrollBar = display.newRoundedRect(viewableScreenW-8,0,5,scrollH,2)
+		-- scrollBar:setFillColor(scrollColorR, scrollColorG, scrollColorB, scrollColorA)
+		-- 
+		-- local yRatio = scrollH/self.height
+		-- self.yRatio = yRatio		
+		-- 
+		-- scrollBar.y = -self.y*self.yRatio + scrollBar.height*0.5 + self.top
+		-- 
+		-- self.scrollBar = scrollBar
+		-- 
+		-- transition.to(scrollBar,  { time=400, alpha=0 } )			
 	end
 
 	function scrollView:cleanUp()
