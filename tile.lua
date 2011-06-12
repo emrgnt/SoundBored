@@ -1,20 +1,19 @@
 module (..., package.seeall)
 -- local util = require("util")
 
-function drawColorTile(tX, tY, tW, tH, tG, sound, color)
+function drawColorTile(tX, tY, tW, tH, sound, color)
 	local tile = display.newRect(tX, tY, tW, tH)
 	tile:setFillColor(color[1], color[2], color[3])
 
 	local tileGroup = display.newGroup()
 	tileGroup:insert(tile)
-	tG:insert(tileGroup)
 
-	assignSound(tile, sound)
+	assignSound(tile, tileGroup, sound)
 	
 	return tileGroup
 end
 
-function drawImageTile(tX, tY, tW, tH, tG, sound, image, scalePercent, scaleAmplifier)
+function drawImageTile(tX, tY, tW, tH, sound, image, scalePercent, scaleAmplifier)
 	local tile = display.newImage(image, tX, tY)
 	tile:scale(scalePercent, scalePercent)
 	tile.width = tW * scaleAmplifier
@@ -24,14 +23,13 @@ function drawImageTile(tX, tY, tW, tH, tG, sound, image, scalePercent, scaleAmpl
 
 	local tileGroup = display.newGroup()
 	tileGroup:insert(tile)
-	tG:insert(tile)
 	
-	assignSound(tile, sound)
+	assignSound(tile, tileGroup, sound)
 
 	return tileGroup
 end
 
-function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmplifier, directorInstance)
+function drawImageButtonTile(tX, tY, tW, tH, image, scalePercent, scaleAmplifier, directorInstance)
 	
 	local tile = display.newImage(image, tX, tY)
 	tile:scale(scalePercent, scalePercent)
@@ -50,13 +48,13 @@ function drawImageButtonTile(tX, tY, tW, tH, tG, image, scalePercent, scaleAmpli
 			director:changeScene ("create")
 		end
 	end
-	tile:addEventListener ("touch", pressRed)
+	tileGroup:addEventListener ("touch", pressRed)
 	
 	return tileGroup
 end
 
 -- TODO: After making OO, click to stop (toggling an is-playing instance var after playSound, removing the event handling and adding one to stop, and vice versa)
-function assignSound(t, s)
+function assignSound(t, g, s)
 	if s == nil then
 		s = "noaudio.mp3"
 	end
@@ -69,5 +67,5 @@ function assignSound(t, s)
 			media.playSound(s)
 		end
 	end
-	t:addEventListener("touch", pressTile)
+	g:addEventListener("touch", pressTile)
 end

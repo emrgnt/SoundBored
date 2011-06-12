@@ -100,15 +100,18 @@ incrementCol()
 for i=2,#data do
 	-- has image
 	if data[i-1]["image"] then
-		data[i-1]["tile"] = tile.drawImageTile(tileX, tileY, tileW, tileH, scrollView, data[i-1]["sound"], data[i-1]["image"], scalePercent, scaleAmplifier)
+		data[i-1]["tile"] = tile.drawImageTile(tileX, tileY, tileW, tileH, data[i-1]["sound"], data[i-1]["image"], scalePercent, scaleAmplifier)
+		scrollView:insert(data[i-1]["tile"])
 		
 	-- has colour
 	elseif data[i-1]["color"] then
-		data[i-1]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, scrollView, data[i-1]["sound"], data[i-1]["color"])
+		data[i-1]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, data[i-1]["sound"], data[i-1]["color"])
+		scrollView:insert(data[i-1]["tile"])
 
 	-- has neither
 	else
-		data[i-1]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, scrollView, data[i-1]["sound"], {200, 200, 200})
+		data[i-1]["tile"] = tile.drawColorTile(tileX, tileY, tileW, tileH, data[i-1]["sound"], {200, 200, 200})
+		scrollView:insert(data[i-1]["tile"])
 	end
 	
 	-- next in row
