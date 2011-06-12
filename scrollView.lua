@@ -161,11 +161,11 @@ function new(params)
         
         self.y = math.floor(self.y + self.velocity*timePassed)
         
-		print("self.y")
-		print(self.y)
-
-		print("self.top")
-		print(self.top)
+		-- print("self.y")
+		-- print(self.y)
+		-- 
+		-- print("self.top")
+		-- print(self.top)
 
         local upperLimit = self.top 
 		local bottomLimit = self.bottom
