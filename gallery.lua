@@ -47,9 +47,14 @@ local data = {
 }
 
 -------------------------------------------
+--- device settings
+
+local colMax = 3
+if system.getInfo("model") == "iPad" then
+	colMax = 4
+end
 
 -- device settings
-local colMax = 3
 local colCount = 1
 local scalePercent = .5
 local scaleAmplifier = 2 -- can probably work this out programatically... round(1 % scalePercent)
