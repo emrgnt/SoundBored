@@ -149,6 +149,8 @@ function director:changeScene(nextScene,
                               arg1,
                               arg2,
                               arg3)
+
+	media.stopSound()
 	
 	-----------------------------------
 	-- If is the same, don't change
